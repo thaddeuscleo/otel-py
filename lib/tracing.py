@@ -7,18 +7,12 @@ from opentelemetry.sdk.trace.export import BatchSpanProcessor
 
 class Tracer:
     def __init__(
-            self,
-            svc_name: str,
-            oltp_endpoint: str,
-            insecure_endpoint: bool
-        ) -> None:
-        resource = Resource(attributes={
-            SERVICE_NAME: svc_name
-        })
+        self, svc_name: str, oltp_endpoint: str, insecure_endpoint: bool
+    ) -> None:
+        resource = Resource(attributes={SERVICE_NAME: svc_name})
 
         otlp_exporter = OTLPSpanExporter(
-            endpoint=oltp_endpoint,
-            insecure=insecure_endpoint
+            endpoint=oltp_endpoint, insecure=insecure_endpoint
         )
 
         traceProvider = TracerProvider(resource=resource)
@@ -32,4 +26,5 @@ class Tracer:
         def wrapper(*args, **kwargs):
             with self.tracer.start_as_current_span(func.__name__):
                 return func(*args, **kwargs)
+
         return wrapper
